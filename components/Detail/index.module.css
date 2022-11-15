@@ -45,3 +45,11 @@
   border-radius: 5px;
   width: 100%;
 }
+
+.errorContainer {
+  background-color: #e9b7b7;
+  border-radius: 3px;
+  padding: 10px;
+  width: 60%;
+  margin: 30px auto;
+}

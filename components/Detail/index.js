@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Store from "../../context/index";
 
 import classes from "./index.module.css";
 
 function Details({ product }) {
+  const [error, setError] = useState("");
+  const { state, dispatch } = useContext(Store);
+
   const {
-    _id,
+    slug,
     name,
     category,
     image,
@@ -17,8 +21,26 @@ function Details({ product }) {
     numReviews,
     countInStock,
   } = product;
+
+  const onClickHandler = () => {
+    const existItem = state.cart.cartItems.find((item) => item.slug === slug);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+
+    if (product.countInStock < quantity) {
+      setError(
+        "X Sorry Product Not Available...Please reduce the Item Quantity"
+      );
+      return;
+    }
+    dispatch({
+      type: "ADD_ITEM_TO_CART",
+      payload: { ...product, quantity },
+    });
+  };
+
   return (
     <div className={classes.container}>
+      {error && <div className={classes.errorContainer}>{error}</div>}
       <div className={classes.productDetailContainer}>
         <div className={classes.imageContainer}>
           <Image
@@ -40,14 +62,10 @@ function Details({ product }) {
             >{`${rating} of ${numReviews} reviews`}</li>
             <li className={classes.list}>Description: {description}</li>
             <br />
-            <Link
-            style={{  textDecoration: "none" }}
-            href="/"
-          >
-            Back To Products Page
-          </Link>
+            <Link style={{ textDecoration: "none" }} href="/">
+              Back To Products Page
+            </Link>
           </ul>
-         
         </div>
         <div className={classes.card}>
           <div className={classes.cardItem}>
@@ -57,7 +75,9 @@ function Details({ product }) {
             <div>Status</div>{" "}
             <div>{countInStock > 1 ? "In Stock" : "Unavailable"}</div>
           </div>
-          <button className={classes.addToCart}>Add to Cart</button>
+          <button onClick={onClickHandler} className={classes.addToCart}>
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>

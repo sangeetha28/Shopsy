@@ -1,10 +1,13 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { useContext } from "react";
+import Store from "../../context/index";
 
 import classes from "./index.module.css";
 
 function Layout({ children }) {
+  const { state } = useContext(Store);
   return (
     <>
       <Head>
@@ -18,16 +21,21 @@ function Layout({ children }) {
               Shopsy
             </Link>
             <div className={classes.navLink}>
-              <Link
-                style={{
-                  padding: "10px",
-                  textDecoration: "none",
-                  color: "purple",
-                }}
-                href="/cart"
-              >
-                Cart
-              </Link>
+              <div style={{ display: "flex" }}>
+                <Link
+                  style={{
+                    padding: "10px",
+                    textDecoration: "none",
+                    color: "purple",
+                  }}
+                  href="/cart"
+                >
+                  Cart
+                </Link>
+                <span className={classes.basketCount}>
+                  {state.cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                </span>
+              </div>
               <Link
                 style={{
                   padding: "10px",
