@@ -1,0 +1,30 @@
+.container {
+  /* max-width: 100%;
+  min-height: 100vh; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.header {
+  background-color: thistle;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  /* border-bottom: 1px solid; */
+  padding: 10px;
+}
+
+.navLink {
+  display: flex;
+  justify-content: space-between;
+}
+
+.link {
+  padding: 0 10px;
+}
