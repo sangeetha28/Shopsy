@@ -6,7 +6,21 @@ import Store from "../../context/index";
 import classes from "./index.module.css";
 
 function CartItemList() {
-  const { state } = useContext(Store);
+  const { state, dispatch } = useContext(Store);
+
+  const updateHandler = (event, item) => {
+    dispatch({
+      type: "ADD_ITEM_TO_CART",
+      payload: { ...item, quantity: Number(event.target.value) },
+    });
+  };
+
+  const removeHandler = (item) => {
+    dispatch({
+      type: "REMOVE_ITEM",
+      payload: item,
+    });
+  };
 
   return (
     <div className={classes.tableContainer}>
@@ -35,15 +49,31 @@ function CartItemList() {
                     &nbsp;<p>{item.name}</p>
                   </Link>
                 </td>
-                <td className={classes.item}>{item.quantity}</td>
+                <td className={classes.item}>
+                  <select
+                    value={item.quantity}
+                    onChange={(e) => updateHandler(e, item)}
+                  >
+                    {[...Array(item.countInStock).keys()].map((count) => (
+                      <option key={count + 1} value={count + 1}>
+                        {count + 1}
+                      </option>
+                    ))}
+                  </select>
+                </td>
                 <td className={classes.item}>${item.price}</td>
                 <td className={classes.item}>
-                  <Image
-                    src={"/images/delete-button.svg"}
-                    alt="remove icon"
-                    width={20}
-                    height={20}
-                  />
+                  <button
+                    className={classes.removeButton}
+                    onClick={() => removeHandler(item)}
+                  >
+                    <Image
+                      src={"/images/delete-button.svg"}
+                      alt="remove icon"
+                      width={20}
+                      height={20}
+                    />
+                  </button>
                 </td>
               </tr>
             ))}

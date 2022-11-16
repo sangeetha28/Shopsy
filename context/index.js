@@ -10,7 +10,7 @@ const initialValue = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "ADD_ITEM_TO_CART":
+    case "ADD_ITEM_TO_CART": {
       const newItem = action.payload;
       const existItem = state.cart.cartItems.find(
         (item) => item.slug === newItem.slug
@@ -24,6 +24,14 @@ const reducer = (state, action) => {
           [...state.cart.cartItems, newItem];
 
       return { ...state, cart: { ...state.cart, cartItems } };
+    }
+    case "REMOVE_ITEM": {
+      const cartItems = state.cart.cartItems.filter(
+        (item) => item.slug !== action.payload.slug
+      );
+      return { ...state, cart: { ...state.cart, cartItems } };
+    }
+
     default:
       return state;
   }

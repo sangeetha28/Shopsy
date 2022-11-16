@@ -54,3 +54,9 @@
   width: 100%;
   margin: 20px auto;
 }
+
+.removeButton {
+  outline: none;
+  border: none;
+  background: transparent;
+}
