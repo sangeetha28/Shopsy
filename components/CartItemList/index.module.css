@@ -1,0 +1,56 @@
+.tableContainer {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 768px) {
+  .tableContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.cartItemList {
+  grid-column: span 3;
+  display: grid;
+  padding: 20px;
+}
+
+.item {
+  text-align: center;
+}
+
+.table {
+  border-collapse: collapse;
+}
+
+.trow {
+  border-bottom: 1px solid rgb(218, 214, 214);
+}
+
+.card {
+  text-align: center;
+  padding: 10px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  max-height: 130px;
+  max-width: 300px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+  }
+}
+
+.addToCart {
+  background-color: #f4ca43;
+  font-size: 15px;
+  border: none;
+  padding: 10px;
+  outline: none;
+  border-radius: 5px;
+  width: 100%;
+  margin: 20px auto;
+}

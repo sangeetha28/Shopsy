@@ -32,9 +32,11 @@ function Layout({ children }) {
                 >
                   Cart
                 </Link>
-                <span className={classes.basketCount}>
-                  {state.cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-                </span>
+                {state.cart.cartItems.length > 0 && (
+                  <span className={classes.basketCount}>
+                    {state.cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                  </span>
+                )}
               </div>
               <Link
                 style={{

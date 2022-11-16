@@ -78,6 +78,12 @@ function Details({ product }) {
           <button onClick={onClickHandler} className={classes.addToCart}>
             Add to Cart
           </button>
+          <button className={classes.addToCart}>
+            <Link style={{ textDecoration: "none", color: "black" }} href="/cart">
+              {" "}
+              Go to Cart
+            </Link>
+          </button>
         </div>
       </div>
     </div>
