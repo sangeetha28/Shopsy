@@ -1,11 +1,12 @@
 import { createContext, useReducer } from "react";
+import Cookies from "js-cookie";
 
 const Store = createContext();
 
 const initialValue = {
-  cart: {
-    cartItems: [],
-  },
+  cart: Cookies.get("cart")
+    ? JSON.parse(Cookies.get("cart"))
+    : { cartItems: [] },
 };
 
 const reducer = (state, action) => {
@@ -22,13 +23,14 @@ const reducer = (state, action) => {
           )
         : //when item doesn't exist already then just return the newItem
           [...state.cart.cartItems, newItem];
-
+      Cookies.set("cart", JSON.stringify({ ...state.cart, cartItems }));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
     case "REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
         (item) => item.slug !== action.payload.slug
       );
+      Cookies.set("cart", JSON.stringify({ ...state.cart, cartItems }));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
 

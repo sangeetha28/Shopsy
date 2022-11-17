@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import Store from "../../context/index";
 
 import classes from "./index.module.css";
 
 function Layout({ children }) {
-  const { state } = useContext(Store);
+  const {
+    state: {
+      cart: { cartItems },
+    },
+  } = useContext(Store);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+
+  useEffect(() => {
+    setCartItemsCount(cartItems.reduce((a, c) => a + c.quantity, 0));
+  }, [cartItems]);
+
   return (
     <>
       <Head>
@@ -32,10 +42,8 @@ function Layout({ children }) {
                 >
                   Cart
                 </Link>
-                {state.cart.cartItems.length > 0 && (
-                  <span className={classes.basketCount}>
-                    {state.cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-                  </span>
+                {cartItemsCount > 0 && (
+                  <span className={classes.basketCount}>{cartItemsCount}</span>
                 )}
               </div>
               <Link

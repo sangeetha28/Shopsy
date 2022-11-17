@@ -11,7 +11,7 @@
 .img {
   width: 100%;
   object-fit: contain;
-  pointer: cursor;
+  cursor: pointer;
 }
 
 .addToCart {

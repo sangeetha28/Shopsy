@@ -3,6 +3,7 @@ import Link from "next/link";
 import Store from "../context/index";
 import Layout from "../components/Layout/index";
 import CartItemList from "../components/CartItemList/index";
+import dynamic from "next/dynamic";
 
 function CartPage() {
   const { state } = useContext(Store);
@@ -33,4 +34,6 @@ function CartPage() {
   );
 }
 
-export default CartPage;
+//dynamic page rendered only on the client side
+
+export default dynamic(() => Promise.resolve(CartPage), { ssr: false });

@@ -2,11 +2,13 @@ import { useContext } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Store from "../../context/index";
+import { useRouter } from "next/router";
 
 import classes from "./index.module.css";
 
 function CartItemList() {
   const { state, dispatch } = useContext(Store);
+  const { router } = useRouter();
 
   const updateHandler = (event, item) => {
     dispatch({
@@ -96,7 +98,12 @@ function CartItemList() {
             </p>
           </div>{" "}
         </div>
-        <button className={classes.addToCart}>Go to Checkout</button>
+        <button
+          className={classes.addToCart}
+          onClick={() => router.push("login?redirect=/shipping")}
+        >
+          Go to Checkout
+        </button>
       </div>
     </div>
   );
