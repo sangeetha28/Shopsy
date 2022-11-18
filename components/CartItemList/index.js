@@ -39,7 +39,7 @@ function CartItemList() {
           <br />
           <tbody>
             {state.cart.cartItems.map((item) => (
-              <tr className={classes.trow}>
+              <tr className={classes.trow} key={item.slug}>
                 <td className={classes.item}>
                   <Link href={`/products/${item.slug}`}>
                     <Image

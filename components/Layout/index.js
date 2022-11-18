@@ -46,16 +46,33 @@ function Layout({ children }) {
                   <span className={classes.basketCount}>{cartItemsCount}</span>
                 )}
               </div>
-              <Link
-                style={{
-                  padding: "10px",
-                  textDecoration: "none",
-                  color: "purple",
-                }}
-                href="/login"
-              >
-                Login
-              </Link>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div>
+                  <Link
+                    style={{
+                      padding: "10px",
+                      textDecoration: "none",
+                      color: "purple",
+                    }}
+                    href="/login"
+                  >
+                    Sign In
+                  </Link>
+                </div>
+                <div>/</div>
+                <div>
+                  <Link
+                    style={{
+                      padding: "10px",
+                      textDecoration: "none",
+                      color: "purple",
+                    }}
+                    href="/register"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              </div>
             </div>
           </nav>
         </header>

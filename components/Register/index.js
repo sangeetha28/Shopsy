@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 
 import classes from "./index.module.css";
 
-function Login() {
+function Register() {
   const router = useRouter();
-  const [authError, setAuthError] = useState("");
+  const [registerStatus, setRegisterStatus] = useState(false);
   const [mongoDBError, setMongoDBError] = useState("");
   const {
     handleSubmit,
@@ -18,18 +17,21 @@ function Login() {
 
   const submitHandler = async ({ email, password }) => {
     try {
-      const response = await signIn("credentials", {
-        redirect: false,
-        email: email,
-        password: password,
+      const response = await fetch("/api/auth/signUp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json ",
+        },
+        body: JSON.stringify({ email: email, password: password }),
       });
-      if (response.error) {
-        setAuthError(
-          "Problem Signing in... Please check your username and password"
-        );
-        return;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
       }
+
       router.push("/");
+      // setRegisterStatus(true);
     } catch (e) {
       setMongoDBError(
         "Sorry, MongoDB Server is not available at the moment. Please try again later"
@@ -39,8 +41,8 @@ function Login() {
 
   return (
     <div className={classes.container}>
-      <h1> Login </h1>
-      {authError && (
+      <h1> Register</h1>
+      {registerStatus && (
         <div
           style={{
             marginBottom: "20px",
@@ -49,9 +51,10 @@ function Login() {
             color: "black",
           }}
         >
-          {authError}
+          "Registered Successfully! Please login"
         </div>
       )}
+
       {mongoDBError && (
         <div
           style={{
@@ -110,14 +113,14 @@ function Login() {
           )}
         </div>
         <div>
-          <button className={classes.addToCart}> Login </button>
+          <button className={classes.addToCart}>Create An Account </button>
         </div>
         <p>
-          Don't have an account? <Link href="/register">Register</Link>
+          Do you have an account with us? <Link href="/login">Login</Link>
         </p>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default Register;
