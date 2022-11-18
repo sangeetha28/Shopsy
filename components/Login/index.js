@@ -8,6 +8,9 @@ import classes from "./index.module.css";
 
 function Login() {
   const router = useRouter();
+
+  const { redirect } = router.query;
+
   const [authError, setAuthError] = useState("");
   const [mongoDBError, setMongoDBError] = useState("");
   const {
@@ -29,7 +32,7 @@ function Login() {
         );
         return;
       }
-      router.push("/");
+      router.push(redirect || "/");
     } catch (e) {
       setMongoDBError(
         "Sorry, MongoDB Server is not available at the moment. Please try again later"

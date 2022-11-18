@@ -27,12 +27,9 @@ export default NextAuth({
         );
 
         if (!result) {
-          console.log("here..2");
           mongodbClient.close();
           throw new Error("Password Incorrect, Couldnt log you in");
         }
-
-        console.log("here..");
 
         mongodbClient.close();
         return { email: user.email };

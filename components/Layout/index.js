@@ -3,10 +3,14 @@ import Head from "next/head";
 import Link from "next/link";
 import { useState, useContext } from "react";
 import Store from "../../context/index";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 import classes from "./index.module.css";
 
 function Layout({ children }) {
+  const { status, data: session } = useSession();
+
   const {
     state: {
       cart: { cartItems },
@@ -46,33 +50,68 @@ function Layout({ children }) {
                   <span className={classes.basketCount}>{cartItemsCount}</span>
                 )}
               </div>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div>
-                  <Link
+              {session && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginLeft: "10px",
+                    color: "purple",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div>{session.user.email}</div>
+                  <div
                     style={{
+                      border: "1px solid purple",
                       padding: "10px",
-                      textDecoration: "none",
                       color: "purple",
+                      cursor: "pointer",
                     }}
-                    href="/login"
                   >
-                    Sign In
-                  </Link>
+                    {" "}
+                    <button
+                      style={{
+                        outline: "none",
+                        border: "none",
+                        background: "none",
+                      }}
+                      onClick={() => signOut()}
+                    >
+                      Logout
+                    </button>
+                  </div>
                 </div>
-                <div>/</div>
-                <div>
-                  <Link
-                    style={{
-                      padding: "10px",
-                      textDecoration: "none",
-                      color: "purple",
-                    }}
-                    href="/register"
-                  >
-                    Sign Up
-                  </Link>
+              )}
+              {!session && status !== "loading" && (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div>
+                    <Link
+                      style={{
+                        padding: "10px",
+                        textDecoration: "none",
+                        color: "purple",
+                      }}
+                      href="/login"
+                    >
+                      Sign In
+                    </Link>
+                  </div>
+                  <div>/</div>
+                  <div>
+                    <Link
+                      style={{
+                        padding: "10px",
+                        textDecoration: "none",
+                        color: "purple",
+                      }}
+                      href="/register"
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </nav>
         </header>

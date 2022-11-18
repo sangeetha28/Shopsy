@@ -8,7 +8,7 @@ import classes from "./index.module.css";
 
 function CartItemList() {
   const { state, dispatch } = useContext(Store);
-  const { router } = useRouter();
+  const router = useRouter();
 
   const updateHandler = (event, item) => {
     dispatch({

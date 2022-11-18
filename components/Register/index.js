@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 import classes from "./index.module.css";
 
@@ -15,14 +16,18 @@ function Register() {
     formState: { errors },
   } = useForm();
 
-  const submitHandler = async ({ email, password }) => {
+  const submitHandler = async ({ username, email, password }) => {
     try {
       const response = await fetch("/api/auth/signUp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json ",
         },
-        body: JSON.stringify({ email: email, password: password }),
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          password: password,
+        }),
       });
       const data = await response.json();
 
@@ -30,8 +35,19 @@ function Register() {
         throw new Error(data.message || "Something went wrong");
       }
 
+      const signInresponse = await signIn("credentials", {
+        redirect: false,
+        email: email,
+        password: password,
+      });
+      if (signInresponse.error) {
+        setAuthError(
+          "Problem Signing in... Please check your username and password"
+        );
+        return;
+      }
+
       router.push("/");
-      // setRegisterStatus(true);
     } catch (e) {
       setMongoDBError(
         "Sorry, MongoDB Server is not available at the moment. Please try again later"
@@ -68,6 +84,24 @@ function Register() {
         </div>
       )}
       <form onSubmit={handleSubmit(submitHandler)}>
+        <div className={classes.inputFieldContainer}>
+          <label style={{ textAlign: "left" }} htmlFor="email">
+            {" "}
+            UserName
+          </label>
+          <input
+            type="text"
+            {...register("username", {
+              required: "Please enter the username",
+            })}
+            id="username"
+            className={classes.inputField}
+            autoFocus
+          ></input>
+          {errors.email && (
+            <div style={{ color: "red" }}>{errors.username.message}</div>
+          )}
+        </div>
         <div className={classes.inputFieldContainer}>
           <label style={{ textAlign: "left" }} htmlFor="email">
             {" "}

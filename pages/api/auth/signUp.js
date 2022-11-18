@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   }
 
   const data = req.body;
-  const { email, password } = data;
+  const { username, email, password } = data;
 
   if (!email || !password) {
     res.status(422).json({ message: "Invalid Data.." });
@@ -27,6 +27,7 @@ export default async function handler(req, res) {
   const bcryptedPassword = await hashedPassword(password);
 
   await db.collection("users").insertOne({
+    username: username,
     email: email,
     password: bcryptedPassword,
   });
