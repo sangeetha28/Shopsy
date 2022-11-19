@@ -5,11 +5,13 @@ import { useState, useContext } from "react";
 import Store from "../../context/index";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 
 import classes from "./index.module.css";
 
 function Layout({ children }) {
   const { status, data: session } = useSession();
+  const router = useRouter();
 
   const {
     state: {
@@ -76,7 +78,9 @@ function Layout({ children }) {
                         border: "none",
                         background: "none",
                       }}
-                      onClick={() => signOut()}
+                      onClick={() => {
+                        signOut();
+                      }}
                     >
                       Logout
                     </button>

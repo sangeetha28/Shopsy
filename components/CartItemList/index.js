@@ -36,7 +36,6 @@ function CartItemList() {
               <th>Remove</th>
             </tr>
           </thead>
-          <br />
           <tbody>
             {state.cart.cartItems.map((item) => (
               <tr className={classes.trow} key={item.slug}>
@@ -100,7 +99,7 @@ function CartItemList() {
         </div>
         <button
           className={classes.addToCart}
-          onClick={() => router.push("login?redirect=/shipping")}
+          onClick={() => router.push("login?redirect=/checkout")}
         >
           Go to Checkout
         </button>
