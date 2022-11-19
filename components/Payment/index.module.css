@@ -1,0 +1,19 @@
+.button {
+  background-color: #f4ca43;
+  font-size: 15px;
+  border: none;
+  padding: 15px;
+  outline: none;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.container {
+  min-height: 100vh;
+  max-width: 350px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
