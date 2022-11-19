@@ -8,7 +8,6 @@ import classes from "./index.module.css";
 
 function Register() {
   const router = useRouter();
-  const [registerStatus, setRegisterStatus] = useState(false);
   const [mongoDBError, setMongoDBError] = useState("");
   const {
     handleSubmit,
@@ -58,19 +57,6 @@ function Register() {
   return (
     <div className={classes.container}>
       <h1> Register</h1>
-      {registerStatus && (
-        <div
-          style={{
-            marginBottom: "20px",
-            padding: "10px",
-            backgroundColor: "lightgrey",
-            color: "black",
-          }}
-        >
-          "Registered Successfully! Please login"
-        </div>
-      )}
-
       {mongoDBError && (
         <div
           style={{

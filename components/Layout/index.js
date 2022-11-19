@@ -57,7 +57,6 @@ function Layout({ children }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    marginLeft: "10px",
                     color: "purple",
                     justifyContent: "space-between",
                   }}
@@ -66,7 +65,7 @@ function Layout({ children }) {
                   <div
                     style={{
                       border: "1px solid purple",
-                      padding: "10px",
+                      padding: "10px 0",
                       color: "purple",
                       cursor: "pointer",
                     }}

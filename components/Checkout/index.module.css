@@ -1,0 +1,43 @@
+.section {
+  margin: 25px;
+
+  flex-wrap: wrap;
+}
+
+.step {
+  flex-grow: 1;
+  text-align: center;
+  border-bottom: 2px solid purple;
+}
+
+.formContainer {
+  max-width: 350px;
+}
+
+@media (max-width: 480px) {
+  .formContainer {
+    min-width: 100%;
+    margin: 0 auto;
+  }
+}
+
+.inputFieldContainer {
+  display: flex;
+  flex-direction: column;
+  margin: 10px auto;
+}
+
+.input {
+  padding: 7px;
+}
+
+.primaryButton {
+  background-color: #f4ca43;
+  font-size: 15px;
+  border: none;
+  padding: 15px;
+  outline: none;
+  border-radius: 5px;
+  margin: 15px 0;
+  cursor: pointer;
+}
