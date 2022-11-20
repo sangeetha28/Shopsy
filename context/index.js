@@ -39,6 +39,12 @@ const reducer = (state, action) => {
         cart: { cartItem: [], shippingAddress: {}, paymentMethod: "" },
       };
     }
+    case "CART_CLEAR_ITEMS": {
+      return {
+        ...state,
+        cart: { ...state.cart, cartItems: [] },
+      };
+    }
     case "SAVE_SHIPPING_ADDRESS": {
       return {
         ...state,

@@ -5,6 +5,7 @@ import Store from "../../context/index";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 function PlaceOrder() {
   const [loading, setLoading] = useState(false);
@@ -32,6 +33,36 @@ function PlaceOrder() {
     }
   }, [paymentMethod, router]);
 
+  const placeOrderHandler = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderItems: cartItems,
+          shippingAddress,
+          paymentMethod,
+          itemPrice,
+          shippingPrice,
+          taxPrice,
+          totalPrice,
+        }),
+      });
+      const data = await response.json();
+
+      setLoading(false);
+      dispatch({ type: "CART_CLEAR_ITEMS" });
+      Cookies.set("cart", JSON.stringify({ ...cart, cartItems: [] }));
+      router.push(`/orders/${data._id}`);
+    } catch (e) {
+      setLoading(false);
+      throw new Error("Something has gone while Placing Order", e);
+    }
+  };
+
   return (
     <div>
       <h1>Place Order</h1>
@@ -39,7 +70,13 @@ function PlaceOrder() {
         <div className={classes.orderDetailsContainer}>
           <div className={classes.card}>
             <h2>Shipping Address</h2>
-            <div style={{ display: "flex", flexDirection: 'column', justifyContent: "space-between" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
               <div>
                 {shippingAddress.fullname},{shippingAddress.address},{" "}
                 {shippingAddress.city},{shippingAddress.postcode},{" "}
@@ -63,7 +100,13 @@ function PlaceOrder() {
           <div className={classes.card}>
             {" "}
             <h2>Payment Method</h2>
-            <div style={{ display: "flex", flexDirection: 'column', justifyContent: "space-between" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
               <div>{paymentMethod}</div>
               <br />
               <div>
@@ -82,7 +125,13 @@ function PlaceOrder() {
           </div>
           <div className={classes.card}>
             <h2>Order Items</h2>
-            <div style={{ display: "flex", flexDirection: 'column', justifyContent: "space-between" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
               <div className={classes.cartItemList}>
                 <table className={classes.table}>
                   <thead className={classes.trow}>
@@ -186,7 +235,7 @@ function PlaceOrder() {
             <button
               className={classes.addToCart}
               disabled={loading}
-              onClick={() => router.push("login?redirect=/checkout")}
+              onClick={placeOrderHandler}
             >
               {loading ? "Loading..." : "Place Order"}
             </button>
