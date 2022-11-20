@@ -1,0 +1,75 @@
+.container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+  
+  .gridItem {
+    border: 1px solid blue;
+  }
+  
+  .orderDetailsContainer {
+    grid-column: span 3;
+  }
+  
+  @media (max-width: 768px) {
+    .orderSummaryContainer {
+      grid-column: span 3;
+    }
+  }
+  
+  .card {
+    text-align: left;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    padding-bottom: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .addToCart {
+    background-color: #f4ca43;
+    font-size: 15px;
+    border: none;
+    padding: 10px;
+    outline: none;
+    border-radius: 5px;
+    width: 100%;
+    margin: 20px auto;
+  }
+  
+  .tableContainer {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  @media (max-width: 768px) {
+    .tableContainer {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .cartItemList {
+    grid-column: span 3;
+    display: grid;
+    padding: 20px;
+  }
+  
+  
+  
+  .table {
+    border-collapse: collapse;
+  }
+  
+  .trow {
+    border-bottom: 1px solid rgb(218, 214, 214);
+  }
+  
+  

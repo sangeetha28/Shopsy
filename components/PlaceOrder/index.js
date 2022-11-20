@@ -52,11 +52,8 @@ function PlaceOrder() {
         }),
       });
       const data = await response.json();
-
       setLoading(false);
-      dispatch({ type: "CART_CLEAR_ITEMS" });
-      Cookies.set("cart", JSON.stringify({ ...cart, cartItems: [] }));
-      router.push(`/orders/${data._id}`);
+      router.push(`/orders/${data.insertedId}`);
     } catch (e) {
       setLoading(false);
       throw new Error("Something has gone while Placing Order", e);

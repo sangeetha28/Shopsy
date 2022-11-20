@@ -1,5 +1,6 @@
-import { connectToDB } from "../../util/connect";
+import { connectToDB } from "../../../util/connect";
 import { getSession } from "next-auth/react";
+import { randomUUID } from "crypto";
 
 export default async function handler(req, res) {
   const session = await getSession({ req });
@@ -21,9 +22,10 @@ export default async function handler(req, res) {
 
   const db = mongodbClient.db();
 
-  const order = await db
-    .collection("orders")
-    .insertOne({ ...req.body, user: user.email });
+  const order = await db.collection("orders").insertOne({
+    ...req.body,
+    user: user.email,
+  });
 
   mongodbClient.close();
 
