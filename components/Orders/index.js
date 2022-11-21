@@ -5,6 +5,8 @@ import Store from "../../context/index";
 import classes from "./index.module.css";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import axios from "axios";
+import toast from "react-toastify";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -29,7 +31,6 @@ function reducer(state, action) {
 
 function Orders() {
   const [isDelivered, setIsDelivered] = useState(false);
-  const [isPaid, setIsPaid] = useState(false);
   const { query } = useRouter();
   const orderId = query.id;
   const { state } = useContext(Store);
@@ -86,42 +87,41 @@ function Orders() {
     shippingPrice,
     taxPrice,
     totalPrice,
+    isPaid,
+    paidAt
   } = order;
 
   const createOrder = async (data, actions) => {
-    const order = await fetch(actions.order.create, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    return actions.order
+      .create({
         purchase_units: [
           {
             amount: { value: totalPrice },
           },
         ],
-      }),
-    });
+      })
+      .then((orderId) => {
+        return orderId;
+      });
   };
 
   //capture and confirm the payment
-  const onApprove = async (data, actions) => {
-    const capture = await fetch(actions.order.capture);
-    try {
-      const details = await capture.json();
-      dispatch({ type: "PAY_REQUEST" });
-      const { data } = await fetch(`/api/orders/${order._id}/pay`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ details }),
-      });
-      dispatch({ type: "PAY_SUCCESS", payload: data });
-      alert("Order is Paid Successfully...");
-    } catch (err) {
-      dispatch({ type: "PAY_FAIL", payload: err });
-    }
+  const onApprove = async (_, actions) => {
+    return actions.order.capture().then(async function (details) {
+      try {
+        dispatch({ type: "PAY_REQUEST" });
+        const { data } = await axios.put(
+          `/api/orders/${order._id}/pay`,
+          details
+        );
+
+        dispatch({ type: "PAY_SUCCESS", payload: data });
+        toast.success("Order is Paid Successfully...");
+      } catch (err) {
+        dispatch({ type: "PAY_FAIL", payload: err });
+        toast.error(err);
+      }
+    });
   };
 
   const onError = (err) => {
@@ -195,11 +195,11 @@ function Orders() {
                     style={{
                       marginBottom: "20px",
                       padding: "10px",
-                      backgroundColor: "lightgrey",
+                      backgroundColor: "#b5d3b5",
                       color: "black",
                     }}
                   >
-                    Paid At
+                    Paid At {paidAt}
                   </div>
                 ) : (
                   <div

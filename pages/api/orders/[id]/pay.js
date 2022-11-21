@@ -1,5 +1,5 @@
 import { getSession } from "next-auth/react";
-import { connectToDB } from "../../../util/connect";
+import { connectToDB } from "../../../../util/connect";
 
 import { ObjectId } from "mongodb";
 
@@ -17,9 +17,28 @@ const handler = async (req, res) => {
 
   const order = await db.collection("orders").findOne({ _id: id });
 
-  mongodbClient.close();
+  if (order) {
+    if (order.isPaid) {
+      return res.status(400).send({ message: "order is already paid" });
+    }
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      email_address: req.body.email_address,
+    };
 
-  res.status(201).json({ order });
+    const paidOrder = await db
+      .collection("orders")
+      .updateOne({ _id: id }, { $set: order });
+
+    mongodbClient.close();
+    res.send({ message: "order paid successfully", order: paidOrder });
+  } else {
+    await db.disconnect();
+    res.status(404).send({ message: "Error: order not found" });
+  }
 };
 
 export default handler;
