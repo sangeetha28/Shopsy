@@ -6,7 +6,7 @@ import classes from "./index.module.css";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import axios from "axios";
-import toast from "react-toastify";
+import { toast } from "react-toastify";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -33,7 +33,8 @@ function Orders() {
   const [isDelivered, setIsDelivered] = useState(false);
   const { query } = useRouter();
   const orderId = query.id;
-  const { state } = useContext(Store);
+
+  const { state, dispatch: storeDispatch } = useContext(Store);
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
@@ -88,7 +89,8 @@ function Orders() {
     taxPrice,
     totalPrice,
     isPaid,
-    paidAt
+    paidAt,
+    orderItems,
   } = order;
 
   const createOrder = async (data, actions) => {
@@ -116,6 +118,9 @@ function Orders() {
         );
 
         dispatch({ type: "PAY_SUCCESS", payload: data });
+        storeDispatch({
+          type: "CART_RESET",
+        });
         toast.success("Order is Paid Successfully...");
       } catch (err) {
         dispatch({ type: "PAY_FAIL", payload: err });
@@ -234,7 +239,7 @@ function Orders() {
                       </tr>
                     </thead>
                     <tbody>
-                      {state.cart.cartItems.map((item) => (
+                      {orderItems.map((item) => (
                         <tr className={classes.trow} key={item.slug}>
                           <td className={classes.item}>
                             <Image

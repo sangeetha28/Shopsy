@@ -15,7 +15,7 @@ function Layout({ children }) {
 
   const {
     state: {
-      cart: { cartItems },
+      cart: { cartItems = [] },
     },
   } = useContext(Store);
   const [cartItemsCount, setCartItemsCount] = useState(0);
