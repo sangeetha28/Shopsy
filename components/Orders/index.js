@@ -1,8 +1,10 @@
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { useRouter } from "next/router";
 import { useEffect, useReducer, useContext, useState } from "react";
 import Store from "../../context/index";
 import classes from "./index.module.css";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -12,6 +14,14 @@ function reducer(state, action) {
       return { ...state, loading: false, order: action.payload, error: "" };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
+    case "PAY_REQUEST":
+      return { ...state, loadingPay: true };
+    case "PAY_SUCCESS":
+      return { ...state, loadingPay: false, successPay: true };
+    case "PAY_FAIL":
+      return { ...state, loadingPay: false, errorPay: action.payload };
+    case "PAY_RESET":
+      return { ...state, loadingPay: false, successPay: false, errorPay: "" };
     default:
       state;
   }
@@ -24,11 +34,14 @@ function Orders() {
   const orderId = query.id;
   const { state } = useContext(Store);
 
-  const [{ loading, error, order }, dispatch] = useReducer(reducer, {
-    loading: true,
-    order: {},
-    error: {},
-  });
+  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
+  const [{ loading, error, order, successPay, loadingPay }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      order: {},
+      error: {},
+    });
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -42,10 +55,29 @@ function Orders() {
         dispatch({ type: "FETCH_FAIL", payload: err });
       }
     };
-    if (!order._id || (order._id && order._id !== orderId)) {
+    // fetch data when success to update the UI
+    if (!order._id || successPay || (order._id && order._id !== orderId)) {
       fetchOrder();
+      if (successPay) {
+        dispatch({ type: "PAY_RESET" });
+      }
+    } else {
+      const loadPaypalScript = async () => {
+        const response = await fetch("/api/keys/paypal");
+        const { clientId } = await response.json();
+        paypalDispatch({
+          type: "resetOptions",
+          value: {
+            "client-id": clientId,
+            currency: "USD",
+          },
+        });
+        paypalDispatch({ type: "setLoadingStatus", value: "pending" });
+      };
+
+      loadPaypalScript();
     }
-  }, [order, orderId]);
+  }, [order, orderId, successPay, paypalDispatch]);
 
   const {
     shippingAddress,
@@ -55,6 +87,47 @@ function Orders() {
     taxPrice,
     totalPrice,
   } = order;
+
+  const createOrder = async (data, actions) => {
+    const order = await fetch(actions.order.create, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        purchase_units: [
+          {
+            amount: { value: totalPrice },
+          },
+        ],
+      }),
+    });
+  };
+
+  //capture and confirm the payment
+  const onApprove = async (data, actions) => {
+    const capture = await fetch(actions.order.capture);
+    try {
+      const details = await capture.json();
+      dispatch({ type: "PAY_REQUEST" });
+      const { data } = await fetch(`/api/orders/${order._id}/pay`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ details }),
+      });
+      dispatch({ type: "PAY_SUCCESS", payload: data });
+      alert("Order is Paid Successfully...");
+    } catch (err) {
+      dispatch({ type: "PAY_FAIL", payload: err });
+    }
+  };
+
+  const onError = (err) => {
+    alert("Something is wrong.", err);
+  };
+
   return (
     <>
       <h1>{`Order ${orderId}`}</h1>
@@ -238,6 +311,20 @@ function Orders() {
                     <div>${totalPrice}</div>
                   </div>
                 </li>
+                {!isPaid && (
+                  <li style={{ listStyle: "none" }}>
+                    {" "}
+                    {/* {isPending && <div>Loading...</div>} */}
+                    <div>
+                      <PayPalButtons
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                      ></PayPalButtons>
+                    </div>
+                    {loadingPay && <div>Loading...</div>}
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -247,4 +334,4 @@ function Orders() {
   );
 }
 
-export default Orders;
+export default dynamic(() => Promise.resolve(Orders), { ssr: false });
